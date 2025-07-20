@@ -197,13 +197,13 @@ class MainActivity : AppCompatActivity() {
         editor.apply()
         val intent = Intent(this, SignInActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-        intent.putExtra("slideAnim", "left") // Add extra data to indicate the animation direction
+        intent.putExtra("slideAnim", "left")
         startActivity(intent)
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left) // Set the transition animation
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
         finish()
     }
     private fun confirmLogout() {
-        // Create confirmation dialog
+
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Logout")
         builder.setMessage("Are you sure you want to log out?")
@@ -212,29 +212,25 @@ class MainActivity : AppCompatActivity() {
         }
         builder.setNegativeButton("No", null)
 
-        // Show confirmation dialog
         val dialog = builder.create()
         dialog.show()
     }
     private fun resetDailyFoods() {
-        // Reset the dailyFoods node
         val dailyFoodsRef = database.child("users").child(userId!!).child("dailyFoods")
         dailyFoodsRef.removeValue()
     }
     private fun scheduleReset() {
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, 1) // Add 1 day to the current date/time
+        calendar.add(Calendar.DAY_OF_YEAR, 1)
 
         val timer = Timer()
         val timerTask = object : TimerTask() {
             override fun run() {
                 resetDailyFoods()
-                // Reschedule the reset operation for the next day
                 scheduleReset()
             }
         }
 
-        // Schedule the timer task to execute at the specified time
         timer.schedule(timerTask, calendar.time)
     }
     private fun deleteDailyFoodsIfDateMismatch() {
@@ -256,11 +252,9 @@ class MainActivity : AppCompatActivity() {
                             if (!isSameDate(currentDate, timestamp)) {
                                 childSnapshot.ref.removeValue()
                                     .addOnSuccessListener {
-                                        // Node values deleted successfully
                                         Log.d(TAG, "Node values deleted successfully")
                                     }
                                     .addOnFailureListener { error ->
-                                        // Handle error while deleting node values
                                         Log.e(TAG, "Error deleting node values: $error")
                                     }
                             }
@@ -269,7 +263,6 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
-                    // Handle onCancelled event
                 }
             })
         }
