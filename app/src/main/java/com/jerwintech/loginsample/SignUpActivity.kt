@@ -108,6 +108,5 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
     override fun onBackPressed() {
-        // do nothing
     }
 }
