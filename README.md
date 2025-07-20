@@ -1,6 +1,6 @@
 # SweeTrack
 
-**FinalSweeTrack** is an Android application designed to assist users in managing their sugar and calorie intake.  
+**SweeTrack** is an Android application designed to assist users in managing their sugar and calorie intake.  
 By leveraging food recognition technology, the app classifies food items and estimates their nutritional content.  
 It then compares this data against personalized daily, weekly, and monthly intake limits tailored to the user's specific health conditions, promoting healthier eating habits.
 
