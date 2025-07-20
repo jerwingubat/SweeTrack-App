@@ -53,17 +53,13 @@ class SignInActivity : AppCompatActivity() {
             val email = forgotPassEmail.text.toString()
 
             if (email.isEmpty()) {
-                // Show an error message if the email is empty
                 forgotPassEmail.error = "Email is required."
             } else {
-                // Send a password reset email to the user's email address
                 firebaseAuth.sendPasswordResetEmail(email)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            // Show a success message if the password reset email was sent successfully
                             Toast.makeText(this, "Password reset email sent.", Toast.LENGTH_SHORT).show()
                         } else {
-                            // Show an error message if there was a problem sending the password reset email
                             Toast.makeText(this, "Failed to send password reset email.", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -106,7 +102,6 @@ class SignInActivity : AppCompatActivity() {
                                 editor.apply()
 
 
-                                // Start the MainActivity
                                 val intent = Intent(this@SignInActivity, MainActivity::class.java)
                                 intent.putExtra("USER_NAME", userName)
                                 startActivity(intent)
@@ -130,12 +125,11 @@ class SignInActivity : AppCompatActivity() {
         val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
 
         if (isLoggedIn) {
-            // User is already logged in, start the MainActivity
             val intent = Intent(this, MainActivity::class.java)
             val userName = sharedPreferences.getString("userName", null)
             intent.putExtra("USER_NAME", userName)
             startActivity(intent)
-            finish() // Optional: Finish the current activity so that the user can't navigate back to the login screen
+            finish()
         }
     }
 
