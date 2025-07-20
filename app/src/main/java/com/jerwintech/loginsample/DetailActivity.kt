@@ -67,7 +67,6 @@ class DetailActivity : AppCompatActivity() {
         loadImage(imageUri)
 
         binding.btnPredicted.setOnClickListener {
-            //implement Tflite
             val model = ModelRegulerizer.newInstance(this)
 
             val imageProcessor: ImageProcessor =
@@ -77,13 +76,11 @@ class DetailActivity : AppCompatActivity() {
             tensorImage.load(bitmap)
             tensorImage = imageProcessor.process(tensorImage)
 
-            // Creates inputs for reference.
             val inputFeature0 =
                 TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
             val byteBuffer = tensorImage.buffer
             inputFeature0.loadBuffer(byteBuffer)
 
-            // Runs model inference and gets result.
             val outputs = model.process(inputFeature0)
             val outputFeature0 = outputs.outputFeature0AsTensorBuffer
 
@@ -102,7 +99,6 @@ class DetailActivity : AppCompatActivity() {
 
                     val uid = currentUser.uid
 
-                    // Save the resultFood under the user's UID node in the database
                     val foodQuantityEditText : EditText = findViewById(R.id.foodquantity)
                     val foodQuantity = foodQuantityEditText.text.toString().toFloatOrNull() ?: 0f
 
@@ -175,7 +171,6 @@ class DetailActivity : AppCompatActivity() {
             binding.btnBackToHome.visibility = View.VISIBLE
             binding.progbar.visibility = View.VISIBLE
 
-            //sugar chart
             if (resultSugar != null){
 
                 val quantityLayout = findViewById<TextInputLayout>(R.id.quantityLayout)
@@ -210,11 +205,9 @@ class DetailActivity : AppCompatActivity() {
         if (requestCode == RC_SIGN_IN) {
             val currentUser = FirebaseAuth.getInstance().currentUser
             if (currentUser != null) {
-                // User has successfully authenticated, start MainActivity
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
             } else {
-                // Authentication failed, display an error message
                 Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
             }
         }
@@ -255,13 +248,12 @@ class DetailActivity : AppCompatActivity() {
         }
         return ind
     }
-    //chart function
     private fun calorieChart(data: String){
         val foodQuantityEditText = findViewById<EditText>(R.id.foodquantity)
-        val foodQuantity = foodQuantityEditText.text.toString().toFloatOrNull() ?: 0f // get value from EditText, default to 1 if not a valid float
+        val foodQuantity = foodQuantityEditText.text.toString().toFloatOrNull() ?: 0f
 
         val visitors: ArrayList<PieEntry> = ArrayList()
-        val dataWithQuantity = data.toFloat() * foodQuantity // multiply data with food quantity
+        val dataWithQuantity = data.toFloat() * foodQuantity
         visitors.add(PieEntry(dataWithQuantity, ""))
         val pieDataSet = PieDataSet(visitors, "Calories per Serving")
         pieDataSet.color = Color.rgb(157, 190, 185)
