@@ -36,7 +36,7 @@ class TimelineActivity : AppCompatActivity() {
             val childReference = database.child("users").child(uid).child("foods")
             childReference.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    // Get data as a List of Maps
+               
                     val dataList = mutableListOf<Map<String, String>>()
                     for (dataSnapshotChild in dataSnapshot.children) {
                         val userData = dataSnapshotChild.value as Map<String, String>
@@ -46,7 +46,7 @@ class TimelineActivity : AppCompatActivity() {
                         val timestampString = userData["timestamp"].toString()
                         if (name != null && calorie != null && sugar != null) {
 
-                            val timestamp = timestampString.toLong() // Convert seconds to milliseconds
+                            val timestamp = timestampString.toLong()
                             val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss a", Locale.getDefault())
                             dateFormat.timeZone = TimeZone.getDefault()
                             val date = dateFormat.format(Date(timestamp))
@@ -55,7 +55,6 @@ class TimelineActivity : AppCompatActivity() {
                         }
                     }
 
-                    // Populate ListView with data
                     val adapter = SimpleAdapter(
                         this@TimelineActivity, dataList,
                         R.layout.list_item_food,
@@ -66,27 +65,23 @@ class TimelineActivity : AppCompatActivity() {
                     adapter.notifyDataSetChanged()
                     listView.requestLayout()
 
-                    // Initialize variables to accumulate total calories and sugar
                     var totalCalorie = 0.0
                     var totalSugar = 0.0
-
-                    // Iterate through dataList to calculate total calories and sugar
+r
                     for (data in dataList) {
                         totalCalorie += data["calorie"]?.toDouble()!!
                         totalSugar += data["sugar"]?.toDouble()!!
                     }
 
-                    // Set up the data for the calorie pie chart
                     val caloriePieEntries = mutableListOf<PieEntry>()
                     caloriePieEntries.add(PieEntry(totalCalorie.toFloat(), ""))
-                    caloriePieEntries.add(PieEntry(0f, "")) // Add an empty entry to make the chart look better
+                    caloriePieEntries.add(PieEntry(0f, ""))
 
                     val caloriePieDataSet = PieDataSet(caloriePieEntries, "Total Calories Consumed")
                     caloriePieDataSet.colors = listOf(Color.rgb(157, 190, 185))
 
                     val caloriePieData = PieData(caloriePieDataSet)
 
-                    // Set up the calorie pie chart
                     val caloriePieChart = findViewById<PieChart>(R.id.timeline_calorie_chart)
                     caloriePieChart.setUsePercentValues(false)
                     caloriePieChart.description.isEnabled = false
@@ -95,17 +90,15 @@ class TimelineActivity : AppCompatActivity() {
                     caloriePieChart.animate()
                     caloriePieChart.invalidate()
 
-                    // Set up the data for the sugar pie chart
                     val sugarPieEntries = mutableListOf<PieEntry>()
                     sugarPieEntries.add(PieEntry(totalSugar.toFloat(), ""))
-                    sugarPieEntries.add(PieEntry(0f, "")) // Add an empty entry to make the chart look better
+                    sugarPieEntries.add(PieEntry(0f, ""))
 
                     val sugarPieDataSet = PieDataSet(sugarPieEntries, "Total Sugar Consumed")
                     sugarPieDataSet.colors = listOf(Color.rgb(255,192,203))
 
                     val sugarPieData = PieData(sugarPieDataSet)
 
-                    // Set up the sugar pie chart
                     val sugarPieChart = findViewById<PieChart>(R.id.timeline_sugar_chart)
                     sugarPieChart.description.isEnabled = false
                     sugarPieChart.animate()
