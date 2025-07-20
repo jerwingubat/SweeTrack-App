@@ -123,9 +123,8 @@ class LogActivity : AppCompatActivity() {
                     val diabetesType = dataSnapshot.getValue(String::class.java)
                     Log.d(TAG, "User diabetes type: $diabetesType")
 
-                    // Add null check for diabetesType
                     if (diabetesType != null) {
-                        // Retrieve daily sugar and calorie intake limits for the user's diabetes type from Firebase
+
                         database.child("users").child("dailyIntake").child(diabetesType).addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 val diabetesTypeLimits = dataSnapshot.getValue(DiabetesTypesLimits::class.java)
@@ -133,12 +132,10 @@ class LogActivity : AppCompatActivity() {
                                 val calorieLimit = dataSnapshot.child("calorieLimit").getValue(Double::class.java)
 
                                 if (diabetesTypeLimits != null) {
-                                    // Display the daily sugar and calorie intake limits in the pie charts
                                     displaySugarLimitInPieChart(diabetesTypeLimits)
                                     displayCalorieLimitInPieChart(diabetesTypeLimits)
                                     Log.d(TAG, "Sugar limit and Calorie Limit: $diabetesTypeLimits")
 
-                                    // Query the Firebase database to get the sum of calorie and sugar intake
                                     database.child("users").child(userId).child("dailyFoods").addListenerForSingleValueEvent(object : ValueEventListener {
                                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                                             var totalCalorie = 0.0
@@ -155,7 +152,6 @@ class LogActivity : AppCompatActivity() {
                                             displaySugarIntakeInPieChart(totalSugar, diabetesTypeLimits.sugarLimit)
                                             displayCalorieIntakeInPieChart(totalCalorie, diabetesTypeLimits.calorieLimit)
 
-                                            // Display the total calorie and sugar intake along with the limits
                                             val sugarReminder: TextView = findViewById(R.id.sugar_reminder)
                                             val calorieReminder: TextView = findViewById(R.id.calorie_reminder)
                                             val calorieText = "Calorie Intake: $totalCalorie Kcal / $calorieLimit Kcal"
@@ -186,12 +182,10 @@ class LogActivity : AppCompatActivity() {
                                 val calorieLimit = dataSnapshot.child("calorieLimit").getValue(Double::class.java)
 
                                 if (diabetesWeeklyLimits != null) {
-                                    // Display the daily sugar and calorie intake limits in the pie charts
                                     displayWeeklySugarLimitInPieChart(diabetesWeeklyLimits)
                                     displayWeeklyCalorieLimitInPieChart(diabetesWeeklyLimits)
                                     Log.d(TAG, "Sugar limit and Calorie Limit: $diabetesWeeklyLimits")
 
-                                    // Query the Firebase database to get the sum of calorie and sugar intake
                                     database.child("users").child(userId).child("weeklyFoods").addListenerForSingleValueEvent(object : ValueEventListener {
                                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                                             var totalCalorie = 0.0
@@ -231,12 +225,10 @@ class LogActivity : AppCompatActivity() {
                                 val calorieLimit = dataSnapshot.child("calorieLimit").getValue(Double::class.java)
 
                                 if (diabetesMonthlyLimits != null) {
-                                    // Display the daily sugar and calorie intake limits in the pie charts
                                     displayMonthlySugarLimitInPieChart(diabetesMonthlyLimits)
                                     displayMonthlyCalorieLimitInPieChart(diabetesMonthlyLimits)
                                     Log.d(TAG, "Sugar limit and Calorie Limit: $diabetesMonthlyLimits")
 
-                                    // Query the Firebase database to get the sum of calorie and sugar intake
                                     database.child("users").child(userId).child("monthlyFoods").addListenerForSingleValueEvent(object : ValueEventListener {
                                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                                             var totalCalorie = 0.0
@@ -340,34 +332,27 @@ class LogActivity : AppCompatActivity() {
         caloriePieChart.invalidate()
     }
     private fun displaySugarIntakeInPieChart(totalSugar: Double, sugarLimit: Double) {
-        // Calculate the remaining sugar limit
         val remainingSugarLimit = sugarLimit - totalSugar
 
-        // Create the pie chart entries for total sugar intake and remaining sugar limit
         val entries = listOf(
             PieEntry(totalSugar.toFloat(), "Total Sugar Intake"),
             PieEntry(remainingSugarLimit.toFloat(), "Remaining Sugar Limit")
         )
 
-        // Create the pie chart data set and customize its appearance
         val dataSet = PieDataSet(entries, "")
         dataSet.valueTextSize = 14f
         dataSet.valueTextColor = Color.WHITE
 
-        // Set the colors for the pie chart slices
         val colors = mutableListOf<Int>()
         if (remainingSugarLimit <= 0) {
-            // Remaining sugar limit is 0 or negative, set color to red
             colors.add(ContextCompat.getColor(this, R.color.alert_color))
             colors.add(ContextCompat.getColor(this,R.color.soft_red))
         } else {
-            // Remaining sugar limit is positive, set regular colors
             colors.add(ContextCompat.getColor(this, R.color.hard_pink))
             colors.add(ContextCompat.getColor(this, R.color.soft_pink))
         }
         dataSet.colors = colors
 
-        // Create the pie chart and customize its appearance
         val pieChart: PieChart = findViewById(R.id.log_sugar_chart)
         pieChart.setUsePercentValues(false)
         pieChart.setEntryLabelTextSize(10f)
@@ -376,7 +361,6 @@ class LogActivity : AppCompatActivity() {
         pieChart.setHoleColor(Color.TRANSPARENT)
         pieChart.setEntryLabelColor(ContextCompat.getColor(this, R.color.dark_blue))
 
-        // Set the data for the pie chart and refresh its display
         pieChart.data = PieData(dataSet)
         pieChart.invalidate()
 
@@ -387,34 +371,27 @@ class LogActivity : AppCompatActivity() {
     }
 
     private fun displayCalorieIntakeInPieChart(totalCalorie: Double, calorieLimit: Double) {
-        // Calculate the remaining calorie limit
         val remainingCalorieLimit = calorieLimit - totalCalorie
 
-        // Create the pie chart entries for total calorie intake and remaining calorie limit
         val entries = listOf(
             PieEntry(totalCalorie.toFloat(), "Total Calorie Intake"),
             PieEntry(remainingCalorieLimit.toFloat(), "Remaining Calorie Limit")
         )
 
-        // Create the pie chart data set and customize its appearance
         val dataSet = PieDataSet(entries, "")
         dataSet.valueTextSize = 14f
         dataSet.valueTextColor = Color.WHITE
 
-        // Set the colors for the pie chart slices
         val colors = mutableListOf<Int>()
         if (remainingCalorieLimit <= 0) {
-            // Remaining sugar limit is 0 or negative, set color to red
             colors.add(ContextCompat.getColor(this, R.color.alert_color))
             colors.add(ContextCompat.getColor(this,R.color.soft_red))
         } else {
-            // Remaining sugar limit is positive, set regular colors
             colors.add(ContextCompat.getColor(this, R.color.teal_700))
             colors.add(ContextCompat.getColor(this, R.color.teal_200))
         }
         dataSet.colors = colors
 
-        // Create the pie chart and customize its appearance
         val pieChart: PieChart = findViewById(R.id.log_calorie_chart)
         pieChart.setUsePercentValues(false)
         pieChart.setEntryLabelTextSize(10f)
@@ -423,7 +400,6 @@ class LogActivity : AppCompatActivity() {
         pieChart.setHoleColor(Color.TRANSPARENT)
         pieChart.setEntryLabelColor(ContextCompat.getColor(this, R.color.dark_blue))
 
-        // Set the data for the pie chart and refresh its display
         pieChart.data = PieData(dataSet)
         pieChart.invalidate()
         if (remainingCalorieLimit <= 0) {
@@ -446,7 +422,7 @@ class LogActivity : AppCompatActivity() {
         data.setValueTextColor(Color.BLACK)
 
         weeklySugarPieChart.data = data.apply {
-            setValueFormatter(DoubleValueFormatter()) // Set custom value formatter
+            setValueFormatter(DoubleValueFormatter())
         }
         weeklySugarPieChart.invalidate()
     }
@@ -469,16 +445,13 @@ class LogActivity : AppCompatActivity() {
         weeklyCaloriePieChart.invalidate()
     }
     private fun displayWeeklySugarIntakeInPieChart(totalSugar: Double, sugarLimit: Double) {
-        // Calculate the remaining sugar limit
         val remainingSugarLimit = sugarLimit - totalSugar
 
-        // Create the pie chart entries for total sugar intake and remaining sugar limit
         val entries = listOf(
             PieEntry(totalSugar.toFloat(), "Total Sugar Intake"),
             PieEntry(remainingSugarLimit.toFloat(), "Remaining Sugar Limit")
         )
 
-        // Create the pie chart data set and customize its appearance
         val dataSet = PieDataSet(entries, "")
         dataSet.colors = listOf(
             ContextCompat.getColor(this, R.color.hard_pink),
@@ -488,7 +461,6 @@ class LogActivity : AppCompatActivity() {
         dataSet.valueTextSize = 14f
         dataSet.valueTextColor = Color.WHITE
 
-        // Create the pie chart and customize its appearance
         val pieChart: PieChart = findViewById(R.id.weekly_sugar_chart)
         pieChart.setUsePercentValues(false)
         pieChart.setEntryLabelTextSize(10f)
@@ -497,24 +469,20 @@ class LogActivity : AppCompatActivity() {
         pieChart.setHoleColor(Color.TRANSPARENT)
         pieChart.setEntryLabelColor(ContextCompat.getColor(this, R.color.dark_blue))
 
-        // Set the data for the pie chart and refresh its display
         pieChart.data = PieData(dataSet).apply {
-            setValueFormatter(DoubleValueFormatter()) // Set custom value formatter
+            setValueFormatter(DoubleValueFormatter())
         }
         pieChart.invalidate()
     }
 
     private fun displayWeeklyCalorieIntakeInPieChart(totalCalorie: Double, calorieLimit: Double) {
-        // Calculate the remaining calorie limit
         val remainingCalorieLimit = calorieLimit - totalCalorie
 
-        // Create the pie chart entries for total calorie intake and remaining calorie limit
         val entries = listOf(
             PieEntry(totalCalorie.toFloat(), "Total Calorie Intake"),
             PieEntry(remainingCalorieLimit.toFloat(), "Remaining Calorie Limit")
         )
 
-        // Create the pie chart data set and customize its appearance
         val dataSet = PieDataSet(entries, "")
         dataSet.colors = listOf(
             ContextCompat.getColor(this, R.color.teal_700),
@@ -524,7 +492,6 @@ class LogActivity : AppCompatActivity() {
         dataSet.valueTextSize = 14f
         dataSet.valueTextColor = Color.WHITE
 
-        // Create the pie chart and customize its appearance
         val pieChart: PieChart = findViewById(R.id.weekly_calorie_chart)
         pieChart.setUsePercentValues(false)
         pieChart.setEntryLabelTextSize(10f)
@@ -533,7 +500,6 @@ class LogActivity : AppCompatActivity() {
         pieChart.setHoleColor(Color.TRANSPARENT)
         pieChart.setEntryLabelColor(ContextCompat.getColor(this, R.color.dark_blue))
 
-        // Set the data for the pie chart and refresh its display
         pieChart.data = PieData(dataSet).apply {
             setValueFormatter(DoubleValueFormatter())
         }
@@ -553,7 +519,7 @@ class LogActivity : AppCompatActivity() {
         data.setValueTextColor(Color.BLACK)
 
         monthlySugarPieChart.data = data.apply {
-            setValueFormatter(DoubleValueFormatter()) // Set custom value formatter
+            setValueFormatter(DoubleValueFormatter())
         }
         monthlySugarPieChart.invalidate()
     }
@@ -577,16 +543,13 @@ class LogActivity : AppCompatActivity() {
     }
 
     private fun displayMonthlySugarIntakeInPieChart(totalSugar: Double, sugarLimit: Double) {
-        // Calculate the remaining sugar limit
         val remainingSugarLimit = sugarLimit - totalSugar
 
-        // Create the pie chart entries for total sugar intake and remaining sugar limit
         val entries = listOf(
             PieEntry(totalSugar.toFloat(), "Total Sugar Intake"),
             PieEntry(remainingSugarLimit.toFloat(), "Remaining Sugar Limit")
         )
 
-        // Create the pie chart data set and customize its appearance
         val dataSet = PieDataSet(entries, "")
         dataSet.colors = listOf(
             ContextCompat.getColor(this, R.color.hard_pink),
@@ -596,7 +559,6 @@ class LogActivity : AppCompatActivity() {
         dataSet.valueTextSize = 14f
         dataSet.valueTextColor = Color.WHITE
 
-        // Create the pie chart and customize its appearance
         val pieChart: PieChart = findViewById(R.id.monthly_sugar_chart)
         pieChart.setUsePercentValues(false)
         pieChart.setEntryLabelTextSize(10f)
@@ -605,7 +567,6 @@ class LogActivity : AppCompatActivity() {
         pieChart.setHoleColor(Color.TRANSPARENT)
         pieChart.setEntryLabelColor(ContextCompat.getColor(this, R.color.dark_blue))
 
-        // Set the data for the pie chart and refresh its display
         pieChart.data = PieData(dataSet).apply {
             setValueFormatter(DoubleValueFormatter()) 
         }
@@ -613,16 +574,13 @@ class LogActivity : AppCompatActivity() {
     }
 
     private fun displayMonthlyCalorieIntakeInPieChart(totalCalorie: Double, calorieLimit: Double) {
-        // Calculate the remaining calorie limit
         val remainingCalorieLimit = calorieLimit - totalCalorie
 
-        // Create the pie chart entries for total calorie intake and remaining calorie limit
         val entries = listOf(
             PieEntry(totalCalorie.toFloat(), "Total Calorie Intake"),
             PieEntry(remainingCalorieLimit.toFloat(), "Remaining Calorie Limit")
         )
-
-        // Create the pie chart data set and customize its appearance
+        
         val dataSet = PieDataSet(entries, "")
         dataSet.colors = listOf(
             ContextCompat.getColor(this, R.color.teal_700),
@@ -632,7 +590,6 @@ class LogActivity : AppCompatActivity() {
         dataSet.valueTextSize = 14f
         dataSet.valueTextColor = Color.WHITE
 
-        // Create the pie chart and customize its appearance
         val pieChart: PieChart = findViewById(R.id.monthly_calorie_chart)
         pieChart.setUsePercentValues(false)
         pieChart.setEntryLabelTextSize(10f)
@@ -641,7 +598,6 @@ class LogActivity : AppCompatActivity() {
         pieChart.setHoleColor(Color.TRANSPARENT)
         pieChart.setEntryLabelColor(ContextCompat.getColor(this, R.color.dark_blue))
 
-        // Set the data for the pie chart and refresh its display
         pieChart.data = PieData(dataSet).apply {
             setValueFormatter(DoubleValueFormatter()) 
         }
@@ -666,11 +622,9 @@ class LogActivity : AppCompatActivity() {
                             if (!isSameDate(currentDate, timestamp)) {
                                 childSnapshot.ref.removeValue()
                                     .addOnSuccessListener {
-                                        // Node values deleted successfully
                                         Log.d(TAG, "Node values deleted successfully")
                                     }
                                     .addOnFailureListener { error ->
-                                        // Handle error while deleting node values
                                         Log.e(TAG, "Error deleting node values: $error")
                                     }
                             }
@@ -679,7 +633,6 @@ class LogActivity : AppCompatActivity() {
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
-                    // Handle onCancelled event
                 }
             })
         }
